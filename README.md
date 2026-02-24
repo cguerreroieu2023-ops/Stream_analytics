@@ -31,10 +31,12 @@ SLA breaches happening? Are there any fraud patterns?
 
 | Name | Role |
 |------|------|
-| _(Team member 1)_ | _(e.g. Feed Design & Schema)_ |
-| _(Team member 2)_ | _(e.g. Generator & Edge Cases)_ |
-| _(Team member 3)_ | _(e.g. Stream Processing)_ |
-| _(Team member 4)_ | _(e.g. Dashboard & Visualization)_ |
+| Roberto Ahumada Gomez | Feed Design & Schema |
+| Claudia Guerrero Morales | Generator & Edge Cases |
+| Omar Ramzi F. Majdalawi | Stream Processing |
+| Sofia Melendez Cabero | Dashboard & Visualization |
+| Bruno Monroy Ortiz | Data Ingestion & Pipeline |
+| Juancho Mulato Yuvienco | Testing & Documentation |
 
 ---
 
