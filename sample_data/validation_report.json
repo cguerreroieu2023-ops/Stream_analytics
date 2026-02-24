@@ -1,0 +1,142 @@
+{
+  "total_order_events": 831,
+  "total_courier_events": 614,
+  "order_event_breakdown": {
+    "CANCELLED": {
+      "count": 41,
+      "pct": 4.93
+    },
+    "COURIER_ASSIGNED": {
+      "count": 189,
+      "pct": 22.74
+    },
+    "DELIVERED": {
+      "count": 189,
+      "pct": 22.74
+    },
+    "ORDER_PLACED": {
+      "count": 231,
+      "pct": 27.8
+    },
+    "PICKED_UP": {
+      "count": 181,
+      "pct": 21.78
+    }
+  },
+  "courier_event_breakdown": {
+    "AVAILABLE": {
+      "count": 205,
+      "pct": 33.39
+    },
+    "DELIVERING": {
+      "count": 183,
+      "pct": 29.8
+    },
+    "OFFLINE": {
+      "count": 20,
+      "pct": 3.26
+    },
+    "ONLINE": {
+      "count": 21,
+      "pct": 3.42
+    },
+    "PICKING_UP": {
+      "count": 185,
+      "pct": 30.13
+    }
+  },
+  "duplicates_injected": {
+    "order": 39,
+    "courier": 29
+  },
+  "late_events_injected": {
+    "order": 66,
+    "courier": 49
+  },
+  "missing_step_orders": 4,
+  "impossible_duration_orders": 3,
+  "mid_delivery_offline_couriers": 1,
+  "fraud_clusters_injected": 4,
+  "fraud_cluster_order_events": 18,
+  "zone_surge": null,
+  "order_value_stats": {
+    "avg": 36.2,
+    "min": 8.27,
+    "max": 64.99
+  },
+  "orders_per_zone": {
+    "zone_center": {
+      "count": 71,
+      "pct": 32.57
+    },
+    "zone_east": {
+      "count": 43,
+      "pct": 19.72
+    },
+    "zone_north": {
+      "count": 34,
+      "pct": 15.6
+    },
+    "zone_south": {
+      "count": 60,
+      "pct": 27.52
+    },
+    "zone_west": {
+      "count": 10,
+      "pct": 4.59
+    }
+  },
+  "couriers_per_zone": {
+    "zone_center": 6,
+    "zone_east": 3,
+    "zone_north": 4,
+    "zone_south": 4,
+    "zone_west": 3
+  },
+  "orders_per_hour": {
+    "0": 0,
+    "1": 0,
+    "2": 1,
+    "3": 0,
+    "4": 0,
+    "5": 1,
+    "6": 0,
+    "7": 4,
+    "8": 0,
+    "9": 5,
+    "10": 5,
+    "11": 3,
+    "12": 23,
+    "13": 38,
+    "14": 17,
+    "15": 5,
+    "16": 3,
+    "17": 7,
+    "18": 13,
+    "19": 22,
+    "20": 31,
+    "21": 29,
+    "22": 9,
+    "23": 2
+  },
+  "data_quality_warnings": [],
+  "config": {
+    "num_orders": 200,
+    "num_couriers": 20,
+    "num_restaurants": 30,
+    "num_zones": 5,
+    "cancel_prob": 0.1,
+    "promo_prob": 0.2,
+    "duplicate_prob": 0.05,
+    "late_prob": 0.08,
+    "missing_step_prob": 0.03,
+    "impossible_duration_prob": 0.02,
+    "mid_delivery_offline_prob": 0.05,
+    "fraud_cluster_prob": 0.02,
+    "zone_surge_event": false,
+    "surge_factor": 2.5,
+    "city": "madrid",
+    "is_weekend": false,
+    "seed": 42
+  }
+}
