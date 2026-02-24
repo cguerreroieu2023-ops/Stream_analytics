@@ -18,8 +18,8 @@ supply-demand dynamics of the platform:
 
 | Feed | Description |
 |------|-------------|
-| **Order Events** | Full lifecycle of every order: placed → assigned → picked up → delivered / cancelled |
-| **Courier Events** | Real-time courier status: online → available → picking up → delivering → offline |
+| **Order Events** | Full lifecycle of every order: placed -> assigned -> picked up -> delivered / cancelled |
+| **Courier Events** | Real-time courier status: online -> available -> picking up -> delivering -> offline |
 
 Together, these feeds allow us to answer the most important operational questions:
 Are there enough couriers in each zone? Are deliveries taking too long? Where are
@@ -42,6 +42,9 @@ SLA breaches happening? Are there any fraud patterns?
 
 ```
 ├── README.md                        # This file
+├── DESIGN.md                        # Design justifications & assumptions
+├── Dockerfile                       # Docker image for the generator
+├── docker-compose.yml               # Docker Compose for easy execution
 ├── generator/
 │   ├── generator.py                 # Synthetic event generator
 │   ├── README_generator.md          # Generator usage and design notes
@@ -52,7 +55,10 @@ SLA breaches happening? Are there any fraud patterns?
 │   ├── order_events.json            # Sample order events (newline-delimited JSON)
 │   ├── order_events.avro            # Sample order events (AVRO binary)
 │   ├── courier_events.json          # Sample courier events (newline-delimited JSON)
-│   └── courier_events.avro          # Sample courier events (AVRO binary)
+│   ├── courier_events.avro          # Sample courier events (AVRO binary)
+│   └── validation_report.json       # Data quality & statistics report
+├── tests/
+│   └── test_generator.py            # Comprehensive pytest test suite
 └── milestone2/                      # (Milestone 2 — to be completed)
     ├── ingestion/
     ├── processing/
@@ -76,6 +82,8 @@ operationally critical metric for dispatch optimization and surge pricing.
 Together they share three join keys (`order_id`, `courier_id`, `zone_id`) that enable
 stream-stream and stream-table joins in Milestone 2.
 
+See [DESIGN.md](DESIGN.md) for the full formal justification.
+
 ### Analytics Enabled
 
 | Use Case | Type | Feeds Used |
@@ -89,36 +97,36 @@ stream-stream and stream-table joins in Milestone 2.
 | Fraud heuristics: repeated cancellations from same customer | Advanced | Order Events |
 | Surge zone prediction from recent window trends | Advanced | Both |
 
-### Schema Design Notes
+### Schema Design
 
 Both schemas are defined in AVRO format (`.avsc` files in `generator/schemas/`).
 
-**Design decisions:**
-- `timestamp` uses `long` with `logicalType: timestamp-millis` — the standard AVRO
-  representation for event time, compatible with Spark's `from_unixtime` and watermarking.
-- Optional fields (e.g. `courier_id`, `order_id`, `cancellation_reason`) use AVRO union
-  type `["null", "string"]` with `"default": null`.
-- `session_id` in the courier feed groups all events in one work shift, enabling
-  session window aggregations in Milestone 2.
-- `is_duplicate` flags synthetic test duplicates so downstream processors can validate
-  deduplication without ambiguity.
-- `schema_version` enables forward compatibility tracking as schemas evolve.
+**Key design decisions:**
+- `timestamp` (event time) and `processing_timestamp` (ingestion time) are both
+  `long` with `logicalType: timestamp-millis` — enabling watermark and lateness testing.
+- Optional fields use AVRO union type `["null", "string"]` with `"default": null`.
+- `session_id` in the courier feed groups all events in one work shift for session windows.
+- `is_duplicate` flags synthetic test duplicates for deduplication validation.
+- `app_version` simulates schema evolution scenarios (mixed app versions in the stream).
+- Enum types include a `default` value for forward compatibility.
 
-### Event-Time Processing Support
+### Edge Cases for Streaming Correctness
 
-All events carry a `timestamp` field in epoch milliseconds representing the time
-the event actually occurred (event time), not when it was ingested (processing time).
-The generator deliberately injects:
+| Edge Case | Flag | Default | Purpose |
+|-----------|------|---------|---------|
+| Out-of-order events | `--late-prob` | 0.08 | Tests watermark behaviour |
+| Duplicates | `--duplicate-prob` | 0.05 | Tests deduplication logic |
+| Missing steps | `--missing-step-prob` | 0.03 | Tests incomplete state handling |
+| Impossible durations | `--impossible-duration-prob` | 0.02 | Tests anomaly detection |
+| Courier offline mid-delivery | `--mid-delivery-offline-prob` | 0.05 | Tests stateful session logic |
+| Fraud clusters | `--fraud-cluster-prob` | 0.02 | Tests fraud pattern detection |
+| Zone surge | `--zone-surge-event` | off | Tests surge detection |
 
-- **Out-of-order events**: timestamps shifted back 5–15 minutes to simulate late arrivals
-  via network delays or mobile reconnection
-- **Duplicates**: same event re-emitted with a new `event_id` and `is_duplicate=True`
-- **Missing steps**: orders jump from ASSIGNED to DELIVERED without PICKED_UP
-- **Impossible durations**: delivery completed in under 10 seconds (anomaly injection)
-- **Mid-delivery drop**: courier goes OFFLINE while an order is assigned to them
+### Validation Report
 
-These edge cases are critical for validating watermark configuration and stateful
-processing correctness in Milestone 2.
+After generation, a `validation_report.json` is produced with comprehensive statistics:
+event counts, type breakdowns, edge case counts, order value stats, per-zone distributions,
+hourly demand curves, and data quality warnings.
 
 ---
 
@@ -138,14 +146,43 @@ _(To be completed)_
 ### Prerequisites
 
 ```bash
-pip install fastavro
+pip install fastavro pytest
 ```
 
 ### Generate Sample Data
 
 ```bash
 cd generator
-python generator.py --num-orders 200 --output-dir ../sample_data
+python generator.py --num-orders 200 --output-dir ../sample_data --date 2026-02-24
+```
+
+### Run with Docker
+
+```bash
+# Build and run
+docker-compose run generator --num-orders 1000
+
+# Streaming mode
+docker-compose run generator --num-orders 1000 --stream --speed-factor 30
+
+# Custom city and date
+docker-compose run generator --num-orders 500 --city barcelona --date 2026-03-01 --weekend
+```
+
+### Run Tests
+
+```bash
+pytest tests/test_generator.py -v
+```
+
+### Streaming Mode
+
+```bash
+# Emit events to stdout as NDJSON with 60x speed (1 real sec = 1 simulated min)
+python generator/generator.py --num-orders 500 --stream --speed-factor 60
+
+# Pipe to a file or Kafka producer
+python generator/generator.py --stream | kafka-console-producer --topic orders
 ```
 
 See `generator/README_generator.md` for full configuration options.

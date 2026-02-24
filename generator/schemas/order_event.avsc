@@ -19,7 +19,8 @@
       "type": {
         "type": "enum",
         "name": "OrderEventType",
-        "symbols": ["ORDER_PLACED", "COURIER_ASSIGNED", "PICKED_UP", "DELIVERED", "CANCELLED"]
+        "symbols": ["ORDER_PLACED", "COURIER_ASSIGNED", "PICKED_UP", "DELIVERED", "CANCELLED"],
+        "default": "ORDER_PLACED"
       },
       "doc": "The type of order lifecycle event"
     },
@@ -27,7 +28,13 @@
       "name": "timestamp",
       "type": "long",
       "logicalType": "timestamp-millis",
-      "doc": "Event time in epoch milliseconds"
+      "doc": "Event time in epoch milliseconds (when the event actually occurred)"
+    },
+    {
+      "name": "processing_timestamp",
+      "type": "long",
+      "logicalType": "timestamp-millis",
+      "doc": "Ingestion time in epoch milliseconds (when the event was received by the system). Differs from timestamp for late-arriving events — critical for watermark testing."
     },
     {
       "name": "customer_id",
@@ -74,10 +81,10 @@
       "doc": "Flag for synthetic duplicates injected for streaming correctness testing"
     },
     {
-      "name": "schema_version",
+      "name": "app_version",
       "type": "string",
-      "default": "1.0",
-      "doc": "Schema version for forward compatibility tracking"
+      "default": "1.0.0",
+      "doc": "Application version that generated this event, for schema evolution testing"
     }
   ]
 }
