@@ -1,0 +1,71 @@
+{
+  "type": "record",
+  "name": "CourierEvent",
+  "namespace": "com.fooddelivery.events",
+  "doc": "Represents a status update event for a courier",
+  "fields": [
+    {
+      "name": "event_id",
+      "type": "string",
+      "doc": "Unique identifier for this event (UUID)"
+    },
+    {
+      "name": "courier_id",
+      "type": "string",
+      "doc": "Unique identifier for the courier"
+    },
+    {
+      "name": "event_type",
+      "type": {
+        "type": "enum",
+        "name": "CourierEventType",
+        "symbols": ["ONLINE", "AVAILABLE", "PICKING_UP", "DELIVERING", "OFFLINE"]
+      },
+      "doc": "The type of courier status event"
+    },
+    {
+      "name": "timestamp",
+      "type": "long",
+      "logicalType": "timestamp-millis",
+      "doc": "Event time in epoch milliseconds"
+    },
+    {
+      "name": "zone_id",
+      "type": "string",
+      "doc": "Geographic zone where the courier is currently located"
+    },
+    {
+      "name": "latitude",
+      "type": "float",
+      "doc": "Current GPS latitude of the courier"
+    },
+    {
+      "name": "longitude",
+      "type": "float",
+      "doc": "Current GPS longitude of the courier"
+    },
+    {
+      "name": "order_id",
+      "type": ["null", "string"],
+      "default": null,
+      "doc": "Order being handled, only present during PICKING_UP and DELIVERING states"
+    },
+    {
+      "name": "session_id",
+      "type": "string",
+      "doc": "Groups all events from a single courier work session (ONLINE to OFFLINE)"
+    },
+    {
+      "name": "is_duplicate",
+      "type": "boolean",
+      "default": false,
+      "doc": "Flag for synthetic duplicates injected for streaming correctness testing"
+    },
+    {
+      "name": "schema_version",
+      "type": "string",
+      "default": "1.0",
+      "doc": "Schema version for forward compatibility tracking"
+    }
+  ]
+}

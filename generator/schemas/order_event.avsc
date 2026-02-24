@@ -1,0 +1,83 @@
+{
+  "type": "record",
+  "name": "OrderEvent",
+  "namespace": "com.fooddelivery.events",
+  "doc": "Represents a lifecycle event for a food delivery order",
+  "fields": [
+    {
+      "name": "event_id",
+      "type": "string",
+      "doc": "Unique identifier for this event (UUID)"
+    },
+    {
+      "name": "order_id",
+      "type": "string",
+      "doc": "Unique identifier for the order, shared across all lifecycle events"
+    },
+    {
+      "name": "event_type",
+      "type": {
+        "type": "enum",
+        "name": "OrderEventType",
+        "symbols": ["ORDER_PLACED", "COURIER_ASSIGNED", "PICKED_UP", "DELIVERED", "CANCELLED"]
+      },
+      "doc": "The type of order lifecycle event"
+    },
+    {
+      "name": "timestamp",
+      "type": "long",
+      "logicalType": "timestamp-millis",
+      "doc": "Event time in epoch milliseconds"
+    },
+    {
+      "name": "customer_id",
+      "type": "string",
+      "doc": "Identifier of the customer who placed the order"
+    },
+    {
+      "name": "restaurant_id",
+      "type": "string",
+      "doc": "Identifier of the restaurant fulfilling the order"
+    },
+    {
+      "name": "courier_id",
+      "type": ["null", "string"],
+      "default": null,
+      "doc": "Identifier of the assigned courier, null until assigned"
+    },
+    {
+      "name": "zone_id",
+      "type": "string",
+      "doc": "Geographic delivery zone identifier"
+    },
+    {
+      "name": "order_value",
+      "type": "float",
+      "doc": "Total monetary value of the order in EUR"
+    },
+    {
+      "name": "promo_applied",
+      "type": "boolean",
+      "default": false,
+      "doc": "Whether a promotional discount was applied"
+    },
+    {
+      "name": "cancellation_reason",
+      "type": ["null", "string"],
+      "default": null,
+      "doc": "Reason for cancellation, only present for CANCELLED events"
+    },
+    {
+      "name": "is_duplicate",
+      "type": "boolean",
+      "default": false,
+      "doc": "Flag for synthetic duplicates injected for streaming correctness testing"
+    },
+    {
+      "name": "schema_version",
+      "type": "string",
+      "default": "1.0",
+      "doc": "Schema version for forward compatibility tracking"
+    }
+  ]
+}
