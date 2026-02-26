@@ -1,8 +1,0 @@
-version: "3.8"
-
-services:
-  generator:
-    build: .
-    volumes:
-      - ./sample_data:/app/output
-    entrypoint: ["python", "generator/generator.py", "--output-dir", "/app/output"]
