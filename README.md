@@ -43,7 +43,7 @@ SLA breaches happening? Are there any fraud patterns?
 ## Repository Structure
 
 ```
-├── README.md                        # This file
+├── README.md                        # This file, overview of the project
 ├── DESIGN.md                        # Design justifications & assumptions
 ├── Dockerfile                       # Docker image for the generator
 ├── docker-compose.yml               # Docker Compose for easy execution
@@ -61,7 +61,7 @@ SLA breaches happening? Are there any fraud patterns?
 │   └── validation_report.json       # Data quality & statistics report
 ├── tests/
 │   └── test_generator.py            # Comprehensive pytest test suite
-└── milestone2/                      # (Milestone 2 — to be completed)
+└── milestone2/                      # milestone 2 will be completed for the following submission
     ├── ingestion/
     ├── processing/
     └── dashboard/
