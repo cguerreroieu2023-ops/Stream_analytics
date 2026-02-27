@@ -1,6 +1,6 @@
 # Design Document — Feed Design & Generation (Milestone 1)
 
-This document formally justifies the technical decisions behind the synthetic data
+This document provides justifications for the technical decisions we have made sorrounding the synthetic data
 generator for the real-time food delivery analytics pipeline.
 
 ---
